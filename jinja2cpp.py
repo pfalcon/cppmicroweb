@@ -157,10 +157,10 @@ ast = env.parse(tpl.read())
 #print ast
 
 tpl_name = sys.argv[1].rsplit('.', 1)[0]
-f = open(tpl_name + ".cpp", "w")
+f = open(sys.argv[1] + ".cpp", "w")
 codegen = MyCodeGenerator(ast.environment, tpl_name, sys.argv[1], f)
 codegen.visit(ast)
 f.close()
-f = open(tpl_name + ".hpp", "w")
+f = open(sys.argv[1] + ".hpp", "w")
 f.write(codegen.prototype + ";\n")
 f.close()

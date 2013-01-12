@@ -47,7 +47,7 @@ void iter(ostream& out, UrlParams p)
     vector<int> vec;
     for (int i = 0; i < val; i++)
         vec.append(i);
-    #include "iter.hpp"
+    #include "iter.tpl.hpp"
     iter(out, vec);
 }
 
