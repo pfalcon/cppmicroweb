@@ -47,8 +47,7 @@ void iter(ostream& out, UrlParams p)
     vector<int> vec;
     for (int i = 0; i < val; i++)
         vec.append(i);
-    #include "iter.tpl.hpp"
-    iter(out, vec);
+    #include "iter.tpl.render"
 }
 
 typedef void (*handler_t)(ostream& out, UrlParams p);

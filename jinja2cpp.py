@@ -164,3 +164,11 @@ f.close()
 f = open(sys.argv[1] + ".hpp", "w")
 f.write(codegen.prototype + ";\n")
 f.close()
+
+f = open(sys.argv[1] + ".render", "w")
+m = re.match(r".+?\((.+)\)$", codegen.prototype)
+args = m.group(1).split(", ")
+arg_names = [x.rsplit(" ", 1)[1] for x in args]
+f.write('#include "%s"\n' % (sys.argv[1] + ".hpp"));
+f.write("%s(%s);\n" % (tpl_name, ", ".join(arg_names)))
+f.close()
