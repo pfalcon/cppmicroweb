@@ -4,6 +4,7 @@
 #include <iterator>
 #include <vector>
 #include <stdlib.h>
+#include <boost/algorithm/string.hpp>
 #include "pcre++.h"
 
 //using namespace std;
@@ -23,8 +24,10 @@ public:
     string() : std::string() {};
     string(const char *s) : std::string(s) {};
     string(const std::string& s) : std::string(s) {};
+    template<class InputIterator> string(InputIterator begin, InputIterator end) : std::string(begin, end) {}
 
     operator int() { return atoi(c_str()); }
+    string strip() { return boost::trim_copy(*this); }
 };
 #endif
 
