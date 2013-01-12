@@ -1,12 +1,37 @@
 #include <string>
 #include <iostream>
 #include <sstream>
+#include <iterator>
 #include "pcre++.h"
 
 using namespace std;
 using namespace pcrepp;
 
-typedef Pcre& UrlParams;
+template<typename T>
+std::ostream& operator<<(std::ostream& out, std::vector<T> const& v)
+{
+    out << '[';
+    if (!v.empty()) {
+        typedef std::ostream_iterator<T> out_iter;
+        copy(v.begin(), v.end() - 1, out_iter(out, ", "));
+        out << v.back();
+    }
+    out << ']';
+    return out;
+}
+
+
+
+class UrlParams
+{
+protected:
+    const Pcre& pcre_;
+public:
+    UrlParams(const Pcre& pcre) : pcre_(pcre) {};
+    string named(const string& name, const string& def=NULL) const { return pcre_.named(name, def); }
+    string no(int idx) const { return pcre_.get_match(idx); }
+};
+//typedef Pcre& UrlParams;
 
 string index(UrlParams p)
 {
@@ -35,14 +60,13 @@ Route routes[] = {
     {NULL}
 };
 
-string route(string path)
+string route(const string path)
 {
     string out;
     for (Route *r = routes; r->regexp; r++) {
         Pcre regexp(r->regexp, PCRE_ANCHORED);
         if (regexp.search(path)) {
-//        if (path == r->regexp) {
-            out = r->handler(regexp);
+            out = r->handler(UrlParams(regexp));
             break;
         }
     }
