@@ -34,7 +34,7 @@ class MyCodeGenerator(CodeGenerator):
         self.writeline('#include "microweb.hpp"')
         #self.writeline("using namespace std;")
         self.writeline("")
-        self.writeline("void tpl(ostream& out")
+        self.writeline("void %s(ostream& out" % self.name)
         comma = True
         for argnode in node.find_all(InternalName):
             type, name = argnode.name
@@ -43,7 +43,7 @@ class MyCodeGenerator(CodeGenerator):
                 self.write(", ")
             self.write("const " + type + "& " + name)
             comma = True
-        self.write(") {")
+        self.write(")")
 
         have_extends = node.find(nodes.Extends) is not None
         eval_ctx = EvalContext(self.environment, self.name)
@@ -52,6 +52,7 @@ class MyCodeGenerator(CodeGenerator):
         frame.toplevel = frame.rootlevel = True
         frame.require_output_check = have_extends and not self.has_known_extends
 
+        self.writeline("{")
         self.indent()
         self.blockvisit(node.body, frame)
         self.outdent()
@@ -153,6 +154,7 @@ tpl = open(sys.argv[1])
 ast = env.parse(tpl.read())
 #print ast
 
-codegen = MyCodeGenerator(ast.environment, "cpp", "cpp")
+tpl_name = sys.argv[1].rsplit('.', 1)[0]
+codegen = MyCodeGenerator(ast.environment, tpl_name, sys.argv[1])
 codegen.stream = sys.stdout
 codegen.visit(ast)
