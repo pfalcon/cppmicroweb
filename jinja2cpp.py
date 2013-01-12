@@ -29,21 +29,23 @@ class MyCodeGenerator(CodeGenerator):
     def __init__(self, *args, **kwargs):
         CodeGenerator.__init__(self, *args, **kwargs)
         self.args = {}
+        self.prototype = None
 
     def visit_Template(self, node, frame=None):
         self.writeline('#include "microweb.hpp"')
         #self.writeline("using namespace std;")
         self.writeline("")
-        self.writeline("void %s(ostream& out" % self.name)
+        self.prototype = "void %s(ostream& out" % self.name
         comma = True
         for argnode in node.find_all(InternalName):
             type, name = argnode.name
             self.args[name] = type
             if comma:
-                self.write(", ")
-            self.write("const " + type + "& " + name)
+                self.prototype += ", "
+            self.prototype += "const " + type + "& " + name
             comma = True
-        self.write(")")
+        self.prototype += ")"
+        self.writeline(self.prototype)
 
         have_extends = node.find(nodes.Extends) is not None
         eval_ctx = EvalContext(self.environment, self.name)
@@ -155,6 +157,10 @@ ast = env.parse(tpl.read())
 #print ast
 
 tpl_name = sys.argv[1].rsplit('.', 1)[0]
-codegen = MyCodeGenerator(ast.environment, tpl_name, sys.argv[1])
-codegen.stream = sys.stdout
+f = open(tpl_name + ".cpp", "w")
+codegen = MyCodeGenerator(ast.environment, tpl_name, sys.argv[1], f)
 codegen.visit(ast)
+f.close()
+f = open(tpl_name + ".hpp", "w")
+f.write(codegen.prototype + ";\n")
+f.close()
