@@ -43,8 +43,12 @@ void num(ostream& out, UrlParams p)
 
 void iter(ostream& out, UrlParams p)
 {
-    string val = p.named("val", "10");
-    out << "Number is: " << hex << 42 << ' ' << dec << (int)val << endl;
+    int val = p.named("val", "10");
+    vector<int> vec;
+    for (int i = 0; i < val; i++)
+        vec.append(i);
+    extern void tpl(ostream& out, const vector<int>& vals);
+    tpl(out, vec);
 }
 
 typedef void (*handler_t)(ostream& out, UrlParams p);

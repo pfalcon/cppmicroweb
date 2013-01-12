@@ -2,6 +2,7 @@
 #include <iostream>
 #include <sstream>
 #include <iterator>
+#include <vector>
 #include <stdlib.h>
 
 //using namespace std;
@@ -22,3 +23,11 @@ public:
     operator int() { return atoi(c_str()); }
 };
 #endif
+
+template <typename T>
+class vector : public std::vector<T>
+{
+public:
+        vector& append(T item) { this->push_back(item); return *this; }
+//        vector& append(const T&)
+};
