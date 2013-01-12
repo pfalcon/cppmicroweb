@@ -76,9 +76,11 @@ void route(ostream& out, const string& path)
     }
 }
 
+#if 0
 int main(int argc, char *argv[])
 {
     ostringstream buf;
     route(buf, argv[1]);
     cout << buf.str();
 }
+#endif
