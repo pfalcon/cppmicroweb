@@ -3,22 +3,6 @@
 
 using namespace pcrepp;
 
-
-template<typename T>
-std::ostream& operator<<(std::ostream& out, std::vector<T> const& v)
-{
-    out << '[';
-    if (!v.empty()) {
-        typedef std::ostream_iterator<T> out_iter;
-        copy(v.begin(), v.end() - 1, out_iter(out, ", "));
-        out << v.back();
-    }
-    out << ']';
-    return out;
-}
-
-
-
 class UrlParams
 {
 protected:
