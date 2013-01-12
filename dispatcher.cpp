@@ -1,11 +1,8 @@
-#include <string>
-#include <iostream>
-#include <sstream>
-#include <iterator>
+#include "microweb.hpp"
 #include "pcre++.h"
 
-using namespace std;
 using namespace pcrepp;
+
 
 template<typename T>
 std::ostream& operator<<(std::ostream& out, std::vector<T> const& v)
@@ -33,20 +30,24 @@ public:
 };
 //typedef Pcre& UrlParams;
 
-string index(UrlParams p)
+void index(ostream& out, UrlParams p)
 {
     string eol = "\n";
-    return "foo" + eol;
+    out << "foo" + eol;
 }
 
-string num(UrlParams p)
+void num(ostream& out, UrlParams p)
 {
-    ostringstream buf;
-    buf << "Number is: " << hex << 42 << ' ' << dec << p.named("val", "NaN") << endl;
-    return buf.str();
+    out << "Number is: " << hex << 42 << ' ' << dec << p.named("val", "NaN") << endl;
 }
 
-typedef string (*handler_t)(UrlParams p);
+void iter(ostream& out, UrlParams p)
+{
+    string val = p.named("val", "10");
+    out << "Number is: " << hex << 42 << ' ' << dec << (int)val << endl;
+}
+
+typedef void (*handler_t)(ostream& out, UrlParams p);
 
 struct Route
 {
@@ -56,24 +57,25 @@ struct Route
 
 Route routes[] = {
     {"/num/(?<val>[0-9]+)?", num},
+    {"/iter/(?<val>[0-9]+)?", iter},
     {"/", index},
     {NULL}
 };
 
-string route(const string path)
+void route(ostream& out, const string& path)
 {
-    string out;
     for (Route *r = routes; r->regexp; r++) {
         Pcre regexp(r->regexp, PCRE_ANCHORED);
         if (regexp.search(path)) {
-            out = r->handler(UrlParams(regexp));
+            r->handler(out, UrlParams(regexp));
             break;
         }
     }
-    return out;
 }
 
 int main(int argc, char *argv[])
 {
-    cout << route(argv[1]);
+    ostringstream buf;
+    route(buf, argv[1]);
+    cout << buf.str();
 }
