@@ -102,6 +102,12 @@ class MyCodeGenerator(CodeGenerator):
         self.visit(node.node, frame)
         self.write("." + node.attr)
 
+    def visit_Getitem(self, node, frame):
+        self.visit(node.node, frame)
+        self.write("[")
+        self.visit(node.arg, frame)
+        self.write("]")
+
     def visit_TemplateData(self, node, frame):
 #        self.write(repr(node.as_const(frame.eval_ctx)))
         1 / 0
@@ -119,6 +125,14 @@ class MyCodeGenerator(CodeGenerator):
 #        self.args[name] = type
 #        print self.args
         pass
+
+    def visit_Const(self, node, frame):
+        val = node.value
+        if isinstance(val, str):
+            self.write(self.c_string(val))
+        else:
+            self.write(repr(val))
+
 
     def signature(self, node, frame, extra_kwargs=None):
         comma = False
