@@ -172,11 +172,13 @@ ast = env.parse(tpl.read())
 #print ast
 
 tpl_name = sys.argv[1].rsplit('.', 1)[0]
-f = open(sys.argv[1] + ".cpp", "w")
+# Use underscore to avoid "*.tpl.cpp" being compiled in "*.tpl" "binary"
+# and thus overwriting original template
+f = open(tpl_name + "_tpl.cpp", "w")
 codegen = MyCodeGenerator(ast.environment, tpl_name, sys.argv[1], f)
 codegen.visit(ast)
 f.close()
-f = open(sys.argv[1] + ".hpp", "w")
+f = open(tpl_name + ".tpl.hpp", "w")
 f.write(codegen.prototype + ";\n")
 f.close()
 
