@@ -139,6 +139,7 @@ class MyCodeGenerator(CodeGenerator):
     def c_string(self, s):
         s = repr(s.encode("utf8"))
         s = s[1:-1]
+        s = s.replace('"', '\\"')
         return '"' + s + '"'
 
     def parse_container_type(self, type):
