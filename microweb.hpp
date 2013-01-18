@@ -6,7 +6,6 @@
 #include <iterator>
 #include <vector>
 #include <stdlib.h>
-#include <boost/algorithm/string.hpp>
 #include <ostream_container.hpp>
 #include <anyvalue.hpp>
 #include "pcre++.h"
