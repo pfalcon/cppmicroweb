@@ -1,6 +1,7 @@
 #ifndef _SMARTER_STRING_HPP
 #define _SMARTER_STRING_HPP
 #include <string>
+#include <boost/algorithm/string.hpp>
 
 class String: public std::string
 {
